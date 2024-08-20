@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "google" {
-  project = "polar-office-422517-t9"
+  project = "round-seeker-433011-t3"
   region  = "us-central1"  # Specify the region if needed for other resources
 }
 
