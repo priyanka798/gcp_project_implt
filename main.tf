@@ -1,4 +1,3 @@
-
 terraform {
   required_providers {
     google = {
@@ -10,28 +9,28 @@ terraform {
 
 provider "google" {
   project = "round-seeker-433011-t3"
-  region  = "us-central1"  # Specify the region for the Cloud Function
-  zone    = "us-central1-a"  # Specify the zone for the Compute Engine instance
+  region  = "us-central1"  # Region for the Cloud Function
+  zone    = "us-central1-a"  # Zone for the Compute Engine instance
 }
 
 # Cloud Function Resource
 resource "google_cloudfunctions_function" "my_function" {
-  name        = "my-cloud-function"              # The name of your Cloud Function
-  runtime     = "python39"                       # The runtime environment (e.g., python39, nodejs14)
-  entry_point = "function_entry_point"           # The name of the function to execute
+  name        = "my-cloud-function"
+  runtime     = "python39"
+  entry_point = "function_entry_point"
 
-  available_memory_mb   = 256                    # Memory allocation for the function
-  source_archive_bucket = "bucket251294"         # Bucket containing the source code
-  source_archive_object = "function-source.zip"  # Zip file containing the source code
+  available_memory_mb   = 256
+  source_archive_bucket = "bucket251294"
+  source_archive_object = "function-source.zip"
 
   # Event Trigger
   event_trigger {
-    event_type = "google.storage.object.finalize"  # Trigger event type (e.g., Cloud Storage)
-    resource   = "bucket251294"                    # Resource triggering the event (your bucket name)
+    event_type = "google.storage.object.finalize"
+    resource   = "bucket251294"
   }
 
   environment_variables = {
-    VAR_NAME = "value"  # Set any environment variables your function needs
+    VAR_NAME = "value"
   }
 }
 
@@ -39,11 +38,11 @@ resource "google_cloudfunctions_function" "my_function" {
 resource "google_compute_instance" "my_instance" {
   name         = "my-instance"
   machine_type = "e2-medium"
-  zone         = "us-central1-a"  # Specify the zone
+  zone         = "us-central1-a"
 
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-11"  # Using Debian 11 as the base image
+      image = "debian-cloud/debian-11"
     }
   }
 
@@ -51,7 +50,7 @@ resource "google_compute_instance" "my_instance" {
     network = "default"
 
     access_config {
-      # This provides the instance with a public IP address
+      # Provides the instance with a public IP address
     }
   }
 
