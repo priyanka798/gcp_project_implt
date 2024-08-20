@@ -9,14 +9,58 @@ terraform {
 
 provider "google" {
   project = "round-seeker-433011-t3"
-  region  = "us-central1"  # Specify the region if needed for other resources
+  region  = "us-central1"  # Specify the region for the Cloud Function
+  zone    = "us-central1-a"  # Specify the zone for the Compute Engine instance
 }
 
-resource "google_storage_bucket" "my_bucket" {
-  name     = "bucket251294"  # Must be globally unique
-  location = "US"                      # Location of the bucket
+# Cloud Function Resource
+resource "google_cloudfunctions_function" "my_function" {
+  name        = "my-cloud-function"              # The name of your Cloud Function
+  runtime     = "python39"                       # The runtime environment (e.g., python39, nodejs14)
+  entry_point = "function_entry_point"           # The name of the function to execute
 
-  lifecycle {
-    prevent_destroy = true             # Optional: Prevent the bucket from being accidentally destroyed
+  available_memory_mb   = 256                    # Memory allocation for the function
+  source_archive_bucket = "bucket251294"   # Bucket containing the source code
+  source_archive_object = "function-source.zip"  # Zip file containing the source code
+  trigger_http          = false                  # Set to true if the function is triggered via HTTP
+
+  event_trigger {
+    event_type = "google.storage.object.finalize"  # Trigger event type (e.g., Cloud Storage)
+    resource   = "your-trigger-bucket"             # Resource triggering the event
   }
+
+  environment_variables = {
+    VAR_NAME = "value"  # Set any environment variables your function needs
+  }
+}
+
+# Compute Engine Instance Resource
+resource "google_compute_instance" "my_instance" {
+  name         = "my-instance"
+  machine_type = "e2-medium"
+  zone         = "us-central1-a"  # Specify the zone
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11"  # Using Debian 11 as the base image
+    }
+  }
+
+  network_interface {
+    network = "default"
+
+    access_config {
+      # Include this to give the instance a public IP address
+    }
+  }
+
+  metadata_startup_script = <<-EOF
+    #!/bin/bash
+    echo "Hello, World!" > /var/www/html/index.html
+    EOF
+}
+
+# Outputs
+output "instance_ip" {
+  value = google_compute_instance.my_instance.network_interface[0].access_config[0].nat_ip
 }
