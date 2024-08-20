@@ -20,13 +20,13 @@ resource "google_cloudfunctions_function" "my_function" {
   entry_point = "function_entry_point"           # The name of the function to execute
 
   available_memory_mb   = 256                    # Memory allocation for the function
-  source_archive_bucket = "bucket251294"   # Bucket containing the source code
+  source_archive_bucket = "bucket251294"         # Bucket containing the source code
   source_archive_object = "function-source.zip"  # Zip file containing the source code
-  trigger_http          = false                  # Set to true if the function is triggered via HTTP
 
+  # Event Trigger
   event_trigger {
     event_type = "google.storage.object.finalize"  # Trigger event type (e.g., Cloud Storage)
-    resource   = "your-trigger-bucket"             # Resource triggering the event
+    resource   = "bucket251294"                    # Resource triggering the event (your bucket name)
   }
 
   environment_variables = {
@@ -50,14 +50,14 @@ resource "google_compute_instance" "my_instance" {
     network = "default"
 
     access_config {
-      # Include this to give the instance a public IP address
+      # This provides the instance with a public IP address
     }
   }
 
   metadata_startup_script = <<-EOF
     #!/bin/bash
     echo "Hello, World!" > /var/www/html/index.html
-    EOF
+  EOF
 }
 
 # Outputs
