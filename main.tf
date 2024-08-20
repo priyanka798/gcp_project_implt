@@ -13,7 +13,7 @@ provider "google" {
 }
 
 resource "google_storage_bucket" "my_bucket" {
-  name     = "bucket251194"  # Must be globally unique
+  name     = "bucket251294"  # Must be globally unique
   location = "US"                      # Location of the bucket
 
   lifecycle {
