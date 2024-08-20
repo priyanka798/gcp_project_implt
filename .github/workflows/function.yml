@@ -16,27 +16,16 @@ jobs:
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
       with:
-        version: '409.0.0'  # Specify the desired version of the Google Cloud SDK
         project_id: 'round-seeker-433011-t3'
-        service_account_key: ${{ secrets.GCP_SA_KEY }}  # Your service account key
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
 
     - name: Install Terraform
       uses: hashicorp/setup-terraform@v2
       with:
-        terraform_version: 1.5.0  # Specify the desired Terraform version
+        terraform_version: 1.5.0
 
     - name: Terraform Init
       run: terraform init
 
     - name: Terraform Plan
       run: terraform plan
-
-    - name: Terraform Apply
-      run: terraform apply -auto-approve
-
-    - name: Get Instance IP
-      id: get_instance_ip
-      run: echo "INSTANCE_IP=$(terraform output -raw instance_ip)" >> $GITHUB_ENV
-
-    - name: Use output value
-      run: echo "The instance IP is ${{ env.INSTANCE_IP }}"
